@@ -98,6 +98,8 @@ public class Binaire {
 		return res;
 	}
 	
+	
+// TODO nbBytesUtf8 en python
 	public static int nbBytesUtf8_V1(char c) {
 		// 0xff80 = 1111 1111 1000 0000 masque unicode
 		if ((c & 0xff80) == 0) {
@@ -109,6 +111,7 @@ public class Binaire {
 		return 3;
 	}
 	
+// TODO nbBytesUtf8 en python
 	public static int nbBytesUtf8_V2(char c) {
 		// 128 = 0000 0000 0111 1111 ->  < 2^7
 		// 2048 = 0000 0111 1111 1111 ->  < 2^8
@@ -122,6 +125,38 @@ public class Binaire {
 		}
 		return 3;
 	}
+	
+	public static int decodeUtf8(int utf8) {
+		// int = entier 32bits!
+		
+		assert ( utf8 & 0xf000000 ) == 0 : "Les 8 premiere bits (gauche) doivent etre égal à 0";
+		
+		int res = 0;
+		
+		// 1er cas
+		if ((utf8 & 0x00ffff80) == 0) { 				// 0x00ffff80 = 0000 0000 1111 1111 1111 1111 1000 0000
+			res = utf8;
+		}
+		// 2eme cas
+		else {
+			if ((utf8 & 0xff0000) == 0) { 				// 0xff0000 = 0000 0000 1111 1111 0000 0000 0000 0000
+				assert ( utf8 & 0xe0c0 ) == 0xC080 : "le code utf8 n'est pas bon";
+				
+				res = utf8 & 0x3f; 						// 0x3f 	= 0000 0000 0000 0000 0000 0000 0011 1111
+				res = res | ((utf8 & 0x1f00) >> 2);		// 0x1f00 	= 0000 0000 0000 0000 0001 1111 0000 0000
+			}
+			// 3eme cas
+			else {
+				assert ( utf8 & 0xf0C0C0 ) == 0xd08080 : "le code utf8 n'est pas bon";
+				
+				res = utf8 & 0x3f;
+				res = res | ((utf8 & 0x3f00) >> 2); 	// 0x3f00	= 0000 0000 0000 0000 0011 1111 0000 0000
+				res = res | ((utf8 & 0xf0000) >> 4); 	// 0xf0000 = 0000 0000 0000 1111 0000 0000 0000 0000
+			}
+		}
+		return res;
+	}
+	
 	
 	/**
 	 * Lancement des exemples
