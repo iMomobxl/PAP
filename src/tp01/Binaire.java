@@ -98,6 +98,31 @@ public class Binaire {
 		return res;
 	}
 	
+	public static int nbBytesUtf8_V1(char c) {
+		// 0xff80 = 1111 1111 1000 0000 masque unicode
+		if ((c & 0xff80) == 0) {
+			return 1;
+		}
+		if ((c & 0xF800) == 0) {
+			return 2;
+		}
+		return 3;
+	}
+	
+	public static int nbBytesUtf8_V2(char c) {
+		// 128 = 0000 0000 0111 1111 ->  < 2^7
+		// 2048 = 0000 0111 1111 1111 ->  < 2^8
+		int n = (int) c;
+		
+		if (n < 128) {
+			return 1;
+		}
+		if (n < 2048) {
+			return 2;
+		}
+		return 3;
+	}
+	
 	/**
 	 * Lancement des exemples
 	 * @param args
