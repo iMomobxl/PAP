@@ -58,21 +58,147 @@ public class vecteur {
 	 * Affiche la somme d'un vecteur d'entier (ma version)
 	 * @param v
 	 */
-	public static void sommeV(int[] v) {
+	public static long sommeV(int[] v) {
 		assert v != null : "v est null";
 		
-		int somme = 0;
+		long somme = 0;
 		for (int elem : v) {
 			somme += elem;
 		}
 		System.out.println(somme);
+		return somme;
 	}
 	
+	/**
+	 * version prof: attention return long! car peut depasser le int (2^63)
+	 * @param v
+	 * @return
+	 */
 	public static long sommeV_V2(int[] v) {
 		long res = 0;
 		for (int elem : v) 
 			res = res + elem;
 		return res;
+	}
+	
+	public static int maxElemV1(int[] v) {
+		assert v.length > 0 : "vecteur est vide";
+		int res = v[0];
+		for (int elem : v) {
+			if (elem > res) {
+				res = elem;
+			}
+		}
+		return res;
+	}
+	
+	public static int maxElemV2(int[] v) {
+		assert v.length > 0 : "vecteur est vide";
+		int res = v[0];
+		for (int i = 1; i < v.length; i++) {
+			if (res < v[i]) {
+				res = v[i];
+			}
+		}
+		return res;
+	}
+	
+	public static int minElemV1(int[] v) {
+		assert v.length > 0 : "vecteur est vide";
+		int res = v[0];
+		for (int elem : v) {
+			if (elem < res) {
+				res = elem;
+			}
+		}
+		return res;
+	}
+	
+	public static int minMaxElemV(int[] v, boolean max ) {
+		int res = v[0];
+		for (int elem : v) {
+			if (max) {
+				if (elem > res) {
+					res = elem;
+				}
+			} 
+			else {
+				if (elem < res) {
+					res = elem;
+				}
+			}
+		}
+		return res;
+	}
+	
+	public static int minMaxElemV_V2(int[] v, boolean max ) {
+		int res = v[0];
+		for (int elem : v) {
+			if (elem > res && max) {
+				res = elem;
+			}
+			else if (elem < res && !max) {
+				res = elem;
+			}
+		}
+		return res;
+	}
+	
+	public static int minMaxElemV_V3(int[] v, boolean max ) {
+		int res = v[0];
+			if (max) {
+				res = maxElemV1(v);
+			} 
+			else if (!max) {
+				res = minElemV1(v);
+			}
+		
+		return res;
+	}
+	
+	public static int minMaxElemV_V4(int[] v, boolean max ) {
+		return max ? maxElemV1(v) : minElemV1(v);
+	}
+	
+	public static double avgElemV(int[] v) {
+		double res = 0;
+		for (int elem : v) {
+			res += elem;
+		}
+		res = res / v.length;
+		return res;
+	}
+	
+	public static double avgElemV2(int[] v) {
+		return sommeV_V2(v) / v.length;
+	}
+	
+	
+	public static int nbElemV(int[] v, int elem) {
+		int cpt = 0;
+		for (int element : v) {
+			if (element == elem) {
+				cpt++;
+			}
+		}
+		return cpt;
+	}
+	
+	
+	public static int[] minMaxElemV(int[] v) {
+		int[] v2 = new int[2];
+		v2[0] = minElemV1(v);
+		v2[1] = maxElemV1(v);
+		return v2;
+	}
+	
+	
+	public static int[] cloneV(int[] v) {
+		int[] v2 = new int[v.length];
+		for (int i = 0; i < v.length; i++) {
+			v2[i] = v[i];
+		}
+		return v2;
 	}
 	
 	public static void main(String[] args) {
@@ -121,10 +247,27 @@ public class vecteur {
 		afficheVectV1(v2);
 		afficheVectV2(v2);
 		
-		System.out.println("Somme Vect:");
-		int[] vecteurInt = {1, 2, 3, 4, 5};
-		sommeV(vecteurInt);
-		System.out.println(sommeV_V2(vecteurInt));
+
+		int[] vecteurInt = {1, 2, 3, 4, 5, -2, 5, 5};
+		System.out.println("Somme Vect: " + sommeV(vecteurInt));
+		System.out.println("Somme Vect: " + sommeV_V2(vecteurInt));
+		System.out.println("maxElemV: " + maxElemV1(vecteurInt));
+		System.out.println("maxElemV: " + maxElemV2(vecteurInt));
+		System.out.println("min_max_true V1: " + minMaxElemV(vecteurInt, true));
+		System.out.println("min_max_false V1 : " + minMaxElemV(vecteurInt, false));
+		System.out.println("min_max_true V2: " + minMaxElemV_V2(vecteurInt, true));
+		System.out.println("min_max_false V2: " + minMaxElemV_V2(vecteurInt, false));
+		System.out.println("min_max_true V3: " + minMaxElemV_V3(vecteurInt, true));
+		System.out.println("min_max_false V3: " + minMaxElemV_V3(vecteurInt, false));
+		System.out.println("min_max_true V4: " + minMaxElemV_V4(vecteurInt, true));
+		System.out.println("min_max_false V4: " + minMaxElemV_V4(vecteurInt, false));
+		System.out.println("avg_ElemV V1: " + avgElemV(vecteurInt));		
+		System.out.println("avg_ElemV V2: " + avgElemV(vecteurInt));
+		System.out.println("nbElemV: " + nbElemV(vecteurInt, 5));
+		System.out.print("cloneV: ");
+		afficheVect(cloneV(vecteurInt));
+		System.out.print("minMaxElemV: ");
+		afficheVect(minMaxElemV(vecteurInt));
 	}
 
 }
