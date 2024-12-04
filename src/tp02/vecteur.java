@@ -2,6 +2,16 @@ package tp02;
 
 public class vecteur {
 	
+	/*
+	 * MinMax2
+	 * declaration de la class (record) dans la classe vecteur
+	 * 
+	 * MinMax
+	 * declaration de la class (record) dans MinMax.java
+	 */
+	record RMinMax(int minimum, int maximum) {
+		
+	}
 	
 	/**
 	 * Affiche un vecteur d'entier
@@ -131,6 +141,10 @@ public class vecteur {
 		return res;
 	}
 	
+
+	
+	
+	
 	public static int minMaxElemV_V2(int[] v, boolean max ) {
 		int res = v[0];
 		for (int elem : v) {
@@ -165,14 +179,21 @@ public class vecteur {
 		for (int elem : v) {
 			res += elem;
 		}
-		res = res / v.length;
+		res = res / (double) v.length;
 		return res;
 	}
 	
 	public static double avgElemV2(int[] v) {
-		return sommeV_V2(v) / v.length;
+		return sommeV_V2(v) / (double) v.length;
 	}
 	
+	/*
+	 * fonction du prof
+	 */
+	public static double avgElemV3(int[] v) {
+		long somme = sommeV_V2(v);
+		return (double) somme / v.length;
+	}
 	
 	public static int nbElemV(int[] v, int elem) {
 		int cpt = 0;
@@ -192,6 +213,43 @@ public class vecteur {
 		return v2;
 	}
 	
+	public static int[] minMaxElemV2(int[] v) {
+		assert v.length > 0 : "Vecteur vide";
+		int[] v2 = new int[2];
+		// int[] v3 = { v[0], v[0] }; // autre facon de declarer le vecteur
+		v2[0] = v[0];
+		v2[1] = v[0];
+		for (int element : v) {
+			if (element < v2[0]) {
+				v2[0] = element;
+			} 
+			else if (element > v2[1]) {
+				v2[1] = element;
+			}
+		}
+		return v2;
+	}
+	
+	/**
+	 * Utilsation du record
+	 * @param v
+	 * @return
+	 */
+	public static RMinMax minMaxElemV3(int[] v) {
+		assert v.length > 0 : "Vecteur vide";
+		int min = v[0];
+		int max = v[0];
+		for (int element : v) {
+			if (element < min) {
+				min = element;
+			} 
+			else if (element > max) {
+				max = element;
+			}
+		}
+		return new RMinMax(min, max);
+	}
+	
 	
 	public static int[] cloneV(int[] v) {
 		int[] v2 = new int[v.length];
@@ -199,6 +257,90 @@ public class vecteur {
 			v2[i] = v[i];
 		}
 		return v2;
+	}
+	
+	/*
+	 * Palindrom V1 
+	 */
+	public static boolean palindrome(char[] v) {
+		boolean estPalindrome = true;
+		//taille paire
+		if (v.length % 2 == 0) {
+			int i = 0;
+			int j = v.length - 1;
+			do {
+				if (v[i] != v[j]) {
+					estPalindrome = false;
+				} else {
+					i++;
+					j--;
+				}
+			} while (estPalindrome && i < (v.length -1 / 2));
+		} else { // taille impaire
+			int i = 0;
+			int j = v.length - 1;
+			do {
+				if (v[i] != v[j]) {
+					estPalindrome = false;
+				} else {
+					i++;
+					j--;
+				}
+			} while (estPalindrome && i < (v.length - 2 / 2));
+		}
+		
+		return estPalindrome;
+	}
+	
+	/**
+	 * Palindrome V2
+	 * @param v
+	 * @return
+	 */
+	
+	public static boolean palindromeV2(char[] v) {
+		assert v.length > 0 : "vecteur vide";
+		boolean estPalindrome = true;
+		int tailleV = v.length / 2;
+		int i = 0;
+		int j = v.length - 1;
+		while (estPalindrome && i < tailleV) {
+			if (v[i] != v[j]) {
+				estPalindrome = false;
+			} else {
+				i++;
+				j--;
+			}
+		} 
+		return estPalindrome;
+	}
+	
+	public static boolean palindromeV3(char[] v) {
+		assert v.length > 0 : "vecteur vide";
+		boolean estPalindrome = true;
+		int tailleV = v.length / 2;
+		int i = 0;
+		int j = v.length - 1;
+		while (estPalindrome && i < tailleV) {
+			estPalindrome = (v[i] == v[j]);
+			i++;
+			j--;
+		} 
+		return estPalindrome;
+	}
+	
+	public static boolean palindromeString(String v) {
+		assert v.length() > 0 : "vecteur vide";
+		boolean estPalindrome = true;
+		int tailleV = v.length() / 2;
+		int i = 0;
+		int j = v.length() - 1;
+		while (estPalindrome && i < tailleV) {
+			estPalindrome = (v.charAt(i) == v.charAt(j));
+			i++;
+			j--;
+		} 
+		return estPalindrome;
 	}
 	
 	public static void main(String[] args) {
@@ -217,10 +359,11 @@ public class vecteur {
 			System.out.print((char) (vecteurDeChar[i] + 48) + ", ");
 		}
 		System.out.println();
-		
+		/*
 		for (char elem: vecteurDeChar) {
 			//System.out.print(elem);
 		}
+		*/
 		
 		//---------------------------------------------------------
 		
@@ -247,6 +390,8 @@ public class vecteur {
 		afficheVectV1(v2);
 		afficheVectV2(v2);
 		
+		int[] v1 = {1 ,2, 3, 3, 4};
+		
 
 		int[] vecteurInt = {1, 2, 3, 4, 5, -2, 5, 5};
 		System.out.println("Somme Vect: " + sommeV(vecteurInt));
@@ -268,6 +413,29 @@ public class vecteur {
 		afficheVect(cloneV(vecteurInt));
 		System.out.print("minMaxElemV: ");
 		afficheVect(minMaxElemV(vecteurInt));
+
+		System.out.println("avg_ElemV V1: " + avgElemV(v1));		
+		System.out.println("avg_ElemV V2: " + avgElemV2(v1));
+		System.out.println("avg_ElemV V3: " + avgElemV3(v1));
+		
+		/*
+		 * Utilisation du record MinMax (class)
+		 */
+		MinMax m = new MinMax(3, 45);
+		System.out.println(m);
+		System.out.println("Le mini est: " + m.minimun() + " , le max est: " + m.maximum());
+
+		System.out.print("minMaxElemV2: ");
+		afficheVect(minMaxElemV2(vecteurInt));
+		
+		int[] v3 = { 1, 209, 3, 3, 4, 0 };
+		System.out.println(minMaxElemV3(v3));
+		char[] v4 = { 'a', 'b', 'b', 'b', 'a' };
+		System.out.println(palindrome(v4));
+		System.out.println(palindromeV2(v4));
+		System.out.println(palindromeV3(v4));
+		System.out.println(palindromeString("abbba"));
+		
 	}
 
 }
