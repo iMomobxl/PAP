@@ -141,10 +141,6 @@ public class vecteur {
 		return res;
 	}
 	
-
-	
-	
-	
 	public static int minMaxElemV_V2(int[] v, boolean max ) {
 		int res = v[0];
 		for (int elem : v) {
@@ -430,6 +426,11 @@ public class vecteur {
 		
 		int[] v3 = { 1, 209, 3, 3, 4, 0 };
 		System.out.println(minMaxElemV3(v3));
+		
+		
+		/*
+		 * Palindrome
+		 */
 		char[] v4 = { 'a', 'b', 'b', 'b', 'a' };
 		System.out.println(palindrome(v4));
 		System.out.println(palindromeV2(v4));
