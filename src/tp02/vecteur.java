@@ -1,5 +1,7 @@
 package tp02;
 
+import java.util.Arrays;
+
 public class vecteur {
 	
 	/*
@@ -339,6 +341,189 @@ public class vecteur {
 		return estPalindrome;
 	}
 	
+	public static char[] copieInverseV1(char[] v) {
+		char[] v1 = new char[v.length];
+		int len = v.length - 1;
+		for(int i = 0; i < len + 1; i++) {
+			v1[i] = v[len - i];
+		}
+		return v1;
+	}
+	
+	public static char[] copieInverseV2(char[] v) {
+		char[] v2 = new char[v.length];
+		int j = v.length - 1;
+		for (char elem : v) {
+			v2[j] = elem;
+			j--;
+		}
+		return v2;
+	}
+	
+	// attention V1 ne marche pas si v est null
+	public static boolean rechercheBinaire(int[] v, int elem) {
+		if (v.length == 0) {
+			return false;
+		}
+		int d = 0;
+		int f = v.length;
+		int m = v.length / 2;
+		boolean find = false;
+		
+		do {
+			if (elem != v[m]) {
+				if (elem < v[m]) {  // plus petit
+					f = m - 1;
+				} else {
+					d = m + 1;		// plus grand
+				}
+				m = (d + f) / 2;
+			} else {
+				find = true;
+			}
+		} while (!find & d <= f);
+		
+		return find;
+	}
+	
+	// version prof (pas de probleme si v est null)
+	public static boolean rechercheBinaireV2(int[] v, int elem) {
+		boolean trouve = false;
+		int d = 0;
+		int f = v.length - 1;
+		while (!trouve & d <= f) {
+			int m = (d + f) / 2;
+			trouve = (v[m] == elem);
+			if (elem < v[m]) {
+				f = m - 1;
+			} else {
+				d = m + 1;
+			}
+		}
+		return trouve;
+	}
+	
+	public static boolean rechercheBinaireV3(int[] v, int elem) {
+		if (v.length == 0) { // cas vecteur vide { }
+			return false;
+		}
+		int d = 0;
+		int f = v.length - 1;
+		int m = (d + f) / 2;
+		while (d < f & v[m] != elem) { // uniquement d < f pas d <= f
+			if (elem < v[m]) {
+				f = m - 1;
+			} else {
+				d = m + 1;
+			}
+			m = (d + f) / 2;
+		}
+		return (v[m] == elem);
+	}
+	
+	/*
+	 * ma version (que le prof n'a pas pensé ahah) (veridicte!!)
+	 */
+	public static boolean sansDoublonV1(int[] v) {
+		boolean doublon = false;
+		
+		for(int i = 0; i < v.length - 1 && !doublon; i++) {
+			//System.out.println("i=" + i);
+			for (int j = i + 1; j < v.length && !doublon; j++) {
+				//System.out.println("j=" + j);
+				doublon = v[i] == v[j];
+			}
+		}
+		
+		return !doublon; // si doublon renvoie false, sinon true
+	}
+	/*
+	 * version prof
+	 */
+	public static boolean sansDoublonV2(int[] v) {
+		boolean doublon = false;
+		int i = 0;
+		while (!doublon && i < v.length - 1) {
+			int j = i + 1;
+			while (!doublon && j < v.length) {
+				doublon = v[i] == v[j];
+				j++;
+			}
+			i++;
+		}
+		return !doublon;
+	}
+	
+	/*
+	 * version tiré par les cheveux du prof
+	 * 3 fonctions: sansDoublonV3(), rechercheBin(), insertToPos()
+	 * 
+	 */
+	
+	
+	
+	public static boolean sansDoublonV3(int[] v) {
+		boolean doublon = true;
+		
+		int[] v2 = new int[v.length];
+		v2[0] = v[0];
+		int n = 1;
+		int pos = 0;
+		
+		int i = 1;
+		while (doublon && i < v.length - 1) {
+			
+			int elem = v[i];
+			pos = rechercheBin(v2, n, elem);
+			doublon = (pos == n) || (v2[pos] != elem);
+			if (doublon) {
+				n = insertToPos(v2, pos, n, elem);
+				i++;
+			}
+			
+		}
+		
+		return !doublon;
+	}
+	
+	// n = nombre d'element dans le vecteur
+	// pos = position ou doit etre inserer elem
+	// elem = element a inserer
+	// v[] = vecteur ou elem doit etre inserer (trié)
+	
+	public static int insertToPos(int[] v, int pos, int n, int elem) {
+		for (int i = n; i > pos; i--) {
+			v[i] = v[i - 1];
+		}
+		v[pos] = elem;
+		//afficheVect(v);
+		return n + 1;
+	}
+	
+	public static int rechercheBin(int[] v, int n, int elem) {
+		boolean trouve = false;
+		int d = 0;
+		int f = n - 1;
+		int m = 0;
+		while (!trouve && d <= f) {
+			m = (d + f) / 2;
+			trouve = v[m] == elem;
+			if (v[m] > elem) {
+				f = m - 1;
+			} else {
+				d = m + 1;
+			}
+		}
+		return d;
+		// if(trouve) {
+		//  	return m;
+		// }
+		// return v[m] < elem ? m +1 : m ;
+	}
+	
+	
+	
+	
 	public static void main(String[] args) {
 		
 		//---------------------------------------------------------
@@ -432,11 +617,37 @@ public class vecteur {
 		 * Palindrome
 		 */
 		char[] v4 = { 'a', 'b', 'b', 'b', 'a' };
+		char[] v5 = { 'a', 'b', 'c', 'd', 'e'};
 		System.out.println(palindrome(v4));
 		System.out.println(palindromeV2(v4));
 		System.out.println(palindromeV3(v4));
 		System.out.println(palindromeString("abbba"));
+		System.out.println(copieInverseV1(v5));
+		System.out.println(copieInverseV2(v5));
 		
+		/*
+		 * RechercheBinaire
+		 */
+		int[] v6 = { 2, 4, 7, 9, 9, 15, 20 };
+		System.out.println(rechercheBinaire(v6,9));
+		System.out.println(rechercheBinaireV2(v6,9));
+		System.out.println(rechercheBinaireV3(v6,9));
+		System.out.println(Arrays.binarySearch(v6, 9));
+		System.out.println(sansDoublonV1(v6));
+		int[] v7 = { 2, 4, 7, 10, 9, 15, 20 };
+		System.out.println(sansDoublonV1(v7));
+		System.out.println(sansDoublonV2(v6));
+		System.out.println(sansDoublonV2(v7));
+		int[] v8 = { 5, 8, 15, 0, 0, 0, 0, 0};
+		int elem = 17;
+		int position = rechercheBin(v8, 3, elem);
+		System.out.println(position); // renvoie la position ou doit se trouver elem dans v2 (ordre croissant)
+		int nbrElem = insertToPos(v8, position, 3, elem);
+		System.out.println(nbrElem);
+		
+
+		System.out.println(sansDoublonV3(v6));
+		System.out.println(sansDoublonV3(v7));
 	}
 
 }

@@ -85,6 +85,56 @@ class test_vecteur {
 		
 	}
 	
+	int[] b1 = { 2, 4, 5, 7, 15, 20};
+	int[] b2 = { 5 };
+	int[] b3 = { 2, 4, 5, 15, 20};
+	int[] b4 = {  };
+	int[] b5 = { 2, 9, 12 };
+	int[] b6 = { 2, 5 };
+	int[] b7 = { 4, 7, 8, 4, 10 };
+	
+	@Test
+	void sansDoublon() {
+		assertTrue(vecteur.sansDoublonV1(b1));
+		assertTrue(vecteur.sansDoublonV1(b2));
+		assertTrue(vecteur.sansDoublonV1(b3));
+		assertTrue(vecteur.sansDoublonV1(b4));
+		assertTrue(vecteur.sansDoublonV1(b5));
+		assertTrue(vecteur.sansDoublonV1(b6));
+		assertFalse(vecteur.sansDoublonV1(b7));
+		assertTrue(vecteur.sansDoublonV2(b1));
+		assertTrue(vecteur.sansDoublonV2(b2));
+		assertTrue(vecteur.sansDoublonV2(b3));
+		assertTrue(vecteur.sansDoublonV2(b4));
+		assertTrue(vecteur.sansDoublonV2(b5));
+		assertTrue(vecteur.sansDoublonV2(b6));
+		assertFalse(vecteur.sansDoublonV2(b7));
+
+	}
+	
+	@Test
+	void rechercheBinaire() {
+		assertTrue(vecteur.rechercheBinaire(b1,4));
+		assertTrue(vecteur.rechercheBinaire(b2,5));
+		assertTrue(vecteur.rechercheBinaire(b3,15));
+		assertFalse(vecteur.rechercheBinaire(b5,3));
+		assertFalse(vecteur.rechercheBinaire(b4,2));
+		assertTrue(vecteur.rechercheBinaire(b6,5));
+		assertTrue(vecteur.rechercheBinaireV2(b1,4));
+		assertTrue(vecteur.rechercheBinaireV2(b2,5));
+		assertTrue(vecteur.rechercheBinaireV2(b3,15));
+		assertFalse(vecteur.rechercheBinaireV2(b5,3));
+		assertFalse(vecteur.rechercheBinaireV2(b4,2));
+		assertTrue(vecteur.rechercheBinaireV2(b6,5));
+		assertTrue(vecteur.rechercheBinaireV3(b1,4));
+		assertTrue(vecteur.rechercheBinaireV3(b2,5));
+		assertTrue(vecteur.rechercheBinaireV3(b3,15));
+		assertFalse(vecteur.rechercheBinaireV3(b5,3));
+		assertFalse(vecteur.rechercheBinaireV3(b4,2));
+		assertTrue(vecteur.rechercheBinaireV3(b6,5));
+		
+	}
+	
 	@Test
 	void testSommeV() {
 		assertEquals(20, vecteur.sommeV(v1));
