@@ -109,6 +109,13 @@ class test_vecteur {
 		assertTrue(vecteur.sansDoublonV2(b5));
 		assertTrue(vecteur.sansDoublonV2(b6));
 		assertFalse(vecteur.sansDoublonV2(b7));
+		assertTrue(vecteur.sansDoublonV3(b1));
+		assertTrue(vecteur.sansDoublonV3(b2));
+		assertTrue(vecteur.sansDoublonV3(b3));
+		//assertTrue(vecteur.sansDoublonV3(b4));
+		assertTrue(vecteur.sansDoublonV3(b5));
+		assertTrue(vecteur.sansDoublonV3(b6));
+		assertFalse(vecteur.sansDoublonV3(b7));
 
 	}
 	

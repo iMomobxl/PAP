@@ -483,7 +483,7 @@ public class vecteur {
 			
 		}
 		
-		return !doublon;
+		return doublon;
 	}
 	
 	// n = nombre d'element dans le vecteur
@@ -514,11 +514,11 @@ public class vecteur {
 				d = m + 1;
 			}
 		}
-		return d;
-		// if(trouve) {
-		//  	return m;
-		// }
-		// return v[m] < elem ? m +1 : m ;
+		//return d;
+		 if(trouve) {
+		  	return m;
+		 }
+		 return v[m] < elem ? m +1 : m ;
 	}
 	
 	
