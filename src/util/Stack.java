@@ -1,6 +1,6 @@
 package util;
 
-import java.util.Arrays;
+//import java.util.Arrays;
 
 public class Stack<T> implements IStack<T> {
 	

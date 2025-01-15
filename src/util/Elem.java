@@ -42,15 +42,13 @@ public class Elem<T> {
 
 	// "source/generate toString()"
 	//
+	@Override
 	public String toString() {
 		return "Elem [info=" + info + ", suiv=" + suiv + "]";
 	}
 
-
 	// "source/generate hashCode() ..."
 	//
-	
-	
 	@Override
 	public int hashCode() {
 		return Objects.hash(info, suiv);
@@ -64,13 +62,7 @@ public class Elem<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Elem other = (Elem) obj;
+		Elem<T> other = (Elem) obj;
 		return Objects.equals(info, other.info) && Objects.equals(suiv, other.suiv);
-	}
-	
-	
-	
-	
-	
-	
+	}	
 }
