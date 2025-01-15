@@ -31,6 +31,8 @@ public class TestStack {
 		
 		//s1.pop();
 		
+		System.out.println("Stack:");
+
 		IStack<String>s3 = new Stack<>(3);
 		s3.push("10");
 		s3.push("20");
@@ -45,5 +47,26 @@ public class TestStack {
 		
 		//s1.pop();
 		
+		System.out.println("StackLinkedList:");
+		IStack<String>s4 = new StackLinkedList<>();
+		s4.push("10");
+		s4.push("20");
+		s4.push("30");
+		s4.push("40");
+		
+		System.out.println(s4.top());
+		
+		while (!s4.empty()) {
+			//System.out.println("pop() s4");
+			System.out.println(s4.pop());
+		}
+		
+		System.out.println("Elem:");		
+		Elem<Integer> e1 = new Elem<Integer>(15);
+		System.out.println(e1);
+		Elem<Integer> e2 = new Elem<Integer>(15);
+		System.out.println(e2);
+		System.out.println("EGAL? " + e1.equals(e2));
+		System.out.println("FIN");
 	}
 }
