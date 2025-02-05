@@ -94,15 +94,14 @@ public class Tri {
 	public static void main(String[] args) {
 		IntStream stream = IntStream.generate(() -> (int) (Math.random() * 1000));
 		int[] v = stream.limit(20).toArray();
-		
+		vecteur.afficheVect(v);
+		Arrays.sort(v);
+		vecteur.afficheVect(v);
 		
 		int[] v2 = {7, 9, 8, 2, 13, 17};
 		vecteur.afficheVect(v2);
 		triIns(v2);
 		vecteur.afficheVect(v2);
-		vecteur.afficheVect(v);
-		Arrays.sort(v);
-//		vecteur.afficheVect(v);
 		
 //		Integer[] v2 = {4, 8, 3};
 //		Arrays.sort(v2, (a, b) -> a - b);
