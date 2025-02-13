@@ -132,9 +132,7 @@ public class matrice {
 			i++;
 		}
 		return valide;
-		
 	}
-
 	
 	public static int[][] produitMat(int[][]m1, int[][]m2) {
 		int[][] m = new int[m1.length][m2[0].length];
