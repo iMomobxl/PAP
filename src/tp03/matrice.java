@@ -3,6 +3,114 @@ package tp03;
 
 public class matrice {
 
+	public static String getColor(int value) {
+		
+//		font-color code:
+//			blue: \u001B[34m
+//			yellow: \u001B[33m
+//			red: \u001B[31m
+//		bg-color code:
+//			black: \u001B[40m
+//		font-size:
+//			bold: \u001B[1m
+	    switch (value) {
+	        case -1: 
+	        	// BORDURE -> font-color: blue, bg-color: black
+	        	return "\033[34m\033[40m"; 
+	        case 0: 
+	        	// VIDE -> bg-color: black
+	        	return "\033[40m"; 			
+	        case 1: 
+	        	// JAUNE -> font-color: yellow, bg-color: black, font-size: bold
+	        	return "\033[33m\033[40m\033[1m";  
+	        case 2: 
+	        	// ROUGE -> font-color: red, bg-color: black, font-size: bold
+	        	return "\033[31m\033[40m\033[1m";  
+	        default: 
+	        	// Réinitialisation par défaut
+	        	return "\033[0m";  			
+	    }
+	}
+	
+	/**
+	 * @param mat
+	 * Affichage d'une matrice plus esthétique
+	 */
+	public static void afficheMat2(int[][] mat) {
+		// Définir les caractères pour les bordures
+		char bordureHorizontale = '\u2550';
+		char bordureVerticale = '\u2551';
+		char croixHorizVert = '\u256C';
+		// nbr de colonnes
+		int m = mat[0].length;
+		// nombre de caractères max pour une donnée de mat
+		int nb = nbMaxChar(mat) + 1;
+		// max car pour afficher l'indice de ligne
+		int maxCarLigne = Integer.toString(mat.length).length();
+		// max car pour la 1ère colonne de la matrice
+		int maxCarColonne1 = nbMaxCharCol1(mat) + 1;
+
+		// début coin sup gauche
+		System.out.printf("%" + maxCarLigne + "s" + bordureVerticale, " ");
+		// indice de colonne avec un écart minimum pour la 1ère colonne
+		for (int j = 0; j < m; j++) {
+			int nbr = j == 0 ? maxCarColonne1 : nb;
+			System.out.printf("%" + nbr + "d", j);
+		}
+		System.out.println();
+		// Affichage d'une ligne horizontale de séparation
+		int cpt = maxCarLigne;
+		for (int j = 0; j < cpt; j++)
+			System.out.print(bordureHorizontale);
+		// La croix
+		System.out.print(croixHorizVert);
+		// La suite de la ligne horizontale
+		cpt = m * nb;
+		for (int j = 0; j < cpt; j++)
+			System.out.print(bordureHorizontale);
+
+		System.out.println();
+		// la matrice avec les entêtes de ligne
+		for (int i = 0; i < mat.length; i++) {
+			// entête de ligne et séparation
+			System.out.printf("%" + maxCarLigne + "d" + bordureVerticale, i);
+			for (int j = 0; j < m; j++) {
+	            String color = getColor(mat[i][j]);
+				// les données en ligne avec le minimum d'espace pour la 1ère colonne
+				int nbr = j == 0 ? maxCarColonne1 : nb;
+				System.out.printf(color + "%" + nbr + "d" + "\u001B[0m", mat[i][j]);
+			}
+			System.out.println();
+		}
+	}
+
+	/**
+	 * Pour l'affichage afficheMat2
+	 * Retourne le nombre maximum de caractères des nombres de la matrice
+	 * @param mat
+	 * @return
+	 */
+	private static int nbMaxChar(int[][] mat) {
+		int maxi = 1;
+		for (int[] v : mat)
+			for (int elem : v)
+				maxi = Math.max(maxi, Integer.toString(elem).length());
+		return maxi;
+	}
+
+	/**
+	 * Pour l'affichage afficheMat2
+	 * nbr maimum de caractères pour la 1ère colonne de la matrice
+	 * @param mat
+	 * @return
+	 */
+	private static int nbMaxCharCol1(int[][] mat) {
+		int maxi = 1;
+		for (int i = 0; i < mat.length; i++)
+			maxi = Math.max(maxi, Integer.toString(mat[i][0]).length());
+		return maxi;
+	}
+
 	public static void afficheMat(int[][] m) {
 		Integer max = maxDigitBis(m) + 2;
 		for (int i = 0; i < m.length; i++) {
