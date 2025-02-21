@@ -3,3 +3,7 @@
 /doc/exo_exam*
 .DS_Store
 /doc
+.idea
+/src/.idea
+/src/out
+/src/PAP_iMomobxl.iml
