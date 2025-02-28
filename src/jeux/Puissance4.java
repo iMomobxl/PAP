@@ -284,44 +284,63 @@ public class Puissance4 {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Bienvenue a Puissance4");
-		System.out.println("Nom du joueur 1?");
-		String nomJoueur1 = scan.next();
-		System.out.println("Nom du joueur 2?");
-		String nomJoueur2 = scan.next();
-		Puissance4 partie = new Puissance4(nomJoueur1, nomJoueur2);
-		//Puissance4 partie = new Puissance4("nomJoueur1", "nomJoueur2");
-		partie.start();
+//		System.out.println("Bienvenue a Puissance4");
+//		System.out.println("Nom du joueur 1?");
+//		String nomJoueur1 = scan.next();
+//		System.out.println("Nom du joueur 2?");
+//		String nomJoueur2 = scan.next();
+//		Puissance4 partie = new Puissance4(nomJoueur1, nomJoueur2);
+//		//Puissance4 partie = new Puissance4("nomJoueur1", "nomJoueur2");
+//		partie.start();
+//		scan.close();
+		
+		Puissance4 partie = new Puissance4("J1", "J2"); 
+		Scanner scan = new Scanner(System.in); 
+		String choix; 
+		do { 
+			partie.initJeu(); 
+			boolean jeuFini = false; 
+			int nbrJeu = 0; 
+			int joueur;
+			System.out.println("Bienvenue a Puissance4"); 
+			do { 
+				partie.afficheJeu();
+				joueur = nbrJeu % 2; 
+				if (joueur == 0) { 
+					joueur = JAUNE; 
+				} else { 
+					joueur = ROUGE; 
+				} 
+				String joueur_color = matrice.getColor(joueur);
+				System.out.printf("%sJoueur %d joue.\u001B[0m%n", joueur_color, joueur);
+				System.out.println("Entré un numero de colonne (1 a 7)"); int colonne;
+				boolean erreur; 
+				do { 
+					colonne = scan.nextInt(); 
+					erreur = (colonne < 1) || (colonne > 7); 
+					if (erreur) {
+						System.out.println("Entré un numero de colonne uniquement de 1 a 7"); 
+					}
+				} while (erreur); 
+				if (partie.inserPion(joueur, colonne)) { 
+					nbrJeu++; 
+					jeuFini = partie.gagner(joueur, colonne); 
+					if (jeuFini) { 
+						partie.afficheJeu();
+						System.out.println("Joueur " + joueur + " gagne! Felicitation."); 
+					} 
+					if (nbrJeu == 42 && !jeuFini) { // 42 limite de coup possible dans le puissance4
+						jeuFini = true; 
+						partie.afficheJeu();
+						System.out.println("Le puissance4 est complet, pas de gagnant."); 
+					} 
+				} else {
+					System.out.println("Coup pas valide recommencé."); 
+				} 
+			} while (!jeuFini);
+			System.out.println("Voulez-vous recommencer? (O/N)"); choix = scan.next(); 
+		} while ("o".equalsIgnoreCase(choix));
+		System.out.println("Merci d'avoir joué, revenez quand vous voulez.");
 		scan.close();
-		
-		
-		
-		
-		
-		/*
-		 * Puissance4 partie = new Puissance4("J1", "J2"); Scanner scan = new
-		 * Scanner(System.in); String choix; do { partie.initJeu(); boolean jeuFini =
-		 * false; int nbrJeu = 0; int joueur;
-		 * 
-		 * System.out.println("Bienvenue a Puissance4"); do { partie.afficheJeu();
-		 * joueur = nbrJeu % 2; if (joueur == 0) { joueur = JAUNE; } else { joueur =
-		 * ROUGE; } String joueur_color = matrice.getColor(joueur);
-		 * System.out.printf("%sJoueur %d joue.\u001B[0m%n", joueur_color, joueur);
-		 * System.out.println("Entré un numero de colonne (1 a 7)"); int colonne;
-		 * boolean erreur; do { colonne = scan.nextInt(); erreur = (colonne < 1) ||
-		 * (colonne > 7); if (erreur) {
-		 * System.out.println("Entré un numero de colonne uniquement de 1 a 7"); } }
-		 * while (erreur); if (partie.inserPion(joueur, colonne)) { nbrJeu++; jeuFini =
-		 * partie.gagner(joueur, colonne); if (jeuFini) { partie.afficheJeu();
-		 * System.out.println("Joueur " + joueur + " gagne! Felicitation."); } if
-		 * (nbrJeu == 42 && !jeuFini) { // 42 limite de coup possible dans le puissance4
-		 * jeuFini = true; partie.afficheJeu();
-		 * System.out.println("Le puissance4 est complet, pas de gagnant."); } } else {
-		 * System.out.println("Coup pas valide recommencé."); } } while (!jeuFini);
-		 * System.out.println("Voulez-vous recommencer? (O/N)"); choix = scan.next(); }
-		 * while ("o".equalsIgnoreCase(choix));
-		 * System.out.println("Merci d'avoir joué, revenez quand vous voulez.");
-		 * scan.close();
-		 */
 	}
 }
