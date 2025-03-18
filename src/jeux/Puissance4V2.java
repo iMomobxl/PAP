@@ -28,9 +28,12 @@ public class Puissance4V2 {
 	// Position du dernier pion
 	private int lignePion;
 	private int colonnePion;
-	//
+	// rajout pour TP 26/02
 	private int nbrPionLigne;
 	private boolean abandon;
+	private int[] listeCoups = new int[NB_CASES];
+	private boolean startJoueur;
+	
 	// le plateau de jeu avec une bordure (-1)
 	private int[][] jeu = new int[8][9];
 
@@ -42,22 +45,27 @@ public class Puissance4V2 {
 	 * @param string
 	 * @param string2
 	 */
-	public Puissance4V2(String joueur1, String joueur2) {
-		this.joueurJaune = joueur1;
-		this.joueurRouge = joueur2;
-		initPartie();
+	public Puissance4V2() {
 		scan = new Scanner(System.in);
+		System.out.println("Bienvenue a Puissance4");
+		System.out.println("Nom du joueur Jaune (1)?");
+		this.joueurJaune = scan.next();
+		System.out.println("Nom du joueur Rouge (2)?");
+		this.joueurRouge = scan.next();
+		initPartie();
 	}
-
+	
 	/**
 	 * Initialise une partie avec les mêmes joueurs
 	 */
 	private void initPartie() {
 		tour = Math.random() < 0.5 ? TOUR_DES_JAUNES : TOUR_DES_ROUGES;
+		startJoueur = tour;
 		initJeu();// initialise la matrice
 		fin = false;
 		gagne = false;
 		nbPions = 0;
+		abandon = false;
 	}
 
 	// affiche le jeu
@@ -104,14 +112,31 @@ public class Puissance4V2 {
 			for (int j = 1; j < m - 1; j++) {
 				// les données en ligne avec le minimum d'espace pour la 1ère colonne
 				int nbr = j == 0 ? maxCarColonne1 : nb;
-				if (mat[i][j] != 0)
-					System.out.printf("%" + nbr + "d", mat[i][j]);
+				if (mat[i][j] != 0) {
+					String color = getColor(mat[i][j]);
+					System.out.printf(color + "%" + nbr + "d" + "\033[0m", mat[i][j]);
+				}
 				else
 					System.out.printf("%" + nbr + "s", ' ');
 			}
 			System.out.println();
 		}
 		System.out.println("-----------------------------------------------------");
+	}
+	
+	
+	public static String getColor(int value) {
+	    switch (value) {		
+	        case 1: 
+	        	// JAUNE -> font-color: yellow (\033[33m), font-size: bold (\033[1m)
+	        	return "\033[33m\033[1m";  
+	        case 2: 
+	        	// ROUGE -> font-color: red (\033[31m), font-size: bold (\033[1m)
+	        	return "\033[31m\033[1m";  
+	        default: 
+	        	// Réinitialisation par défaut
+	        	return "\033[0m";  			
+	    }
 	}
 
 	/**
@@ -175,7 +200,7 @@ public class Puissance4V2 {
 		this.colonnePion = colonne;
 		return true;
 	}
-
+	
 	/**
 	 * Lancement d'une partie innitialisée
 	 */
@@ -195,21 +220,19 @@ public class Puissance4V2 {
 				} else {
 					ok = insertPion(pionJoueur(), col);
 				}
-				if (!ok)
+				if (!ok && col != 0)
 					System.out.println("La colonne est déjà pleine!!");
 			} while (!ok);
 			if (!abandon) {
+				insertHistorique();
 				nbPions++;// un pion en plus dans le jeu
-				//gagne = quattreALaSuite();
-				gagne = quattreALaSuiteV2();
+				gagne = quattreALaSuite();
 				fin = gagne || nbPions == NB_CASES;
 				if (!fin)// changement joueur
 					tour = !tour;
 			}
 		}
-		if (abandon)
-			System.out.println(nomJoueur() + " a abandonné!");
-		else {
+		if (!abandon) {
 			afficheJeu();
 			if (gagne)
 				System.out.println("Bravo " + nomJoueur() + " vous avez gagné!!");
@@ -218,10 +241,39 @@ public class Puissance4V2 {
 		}
 	}
 	
+	private void insertHistorique() {
+		listeCoups[nbPions] = colonnePion;
+	}
+	
+	public void afficheListeDesCoups() {
+		System.out.println("Liste des coups joués:");
+		tour = startJoueur;
+		System.out.print(nomJoueur() + " a commencé avec les ");
+		System.out.println(couleurJoueur());
+		for (int i = 0; i < nbPions; i++) {
+			System.out.println("Colonne: " + listeCoups[i] + " " + nomJoueur());
+			tour = !tour;
+		}
+		
+	}
+	
 	private boolean abandonJeu() {
-		fin = true;
-		abandon = true;
-		return true;
+		System.out.print(nomJoueur() + ", Veuillez confirmer l'abandon? (o/n)");
+		String choix = "";
+		while (!"o".equalsIgnoreCase(choix) && !"n".equalsIgnoreCase(choix)) {
+			choix = scan.next();
+			if ("o".equalsIgnoreCase(choix)) {
+				fin = true;
+				abandon = true;
+				System.out.println(nomJoueur() + " a abandonné!");
+				tour = !tour;
+				System.out.println("Bravo " + nomJoueur() + " vous avez gagné!!");
+				return true;
+			} else if ("n".equalsIgnoreCase(choix))
+				return false;
+			System.out.print(nomJoueur() + ", Mauvais choix recommencé... (o/n)");
+		}
+		return false;
 	}
 
 	/**
@@ -234,30 +286,30 @@ public class Puissance4V2 {
 		nbrPionLigne = 1; // initialise le compteur (pion initial joué)
 		checkLigne(0, 1); // check direction droite
 		checkLigne(0, -1); // check direction gauche
-		if (nbrPionLigne == 4) {
+		if (nbrPionLigne == 4) 
 			return true;
-		}
+		
 		// check vertical
 		nbrPionLigne = 1; // reinitialise le compteur
 		checkLigne(1, 0); // check direction bas
 		checkLigne(-1, 0); // check direction haut
-		if (nbrPionLigne == 4) {
+		if (nbrPionLigne == 4)
 			return true;
-		} 
+		
 		// check 1ere diagonal
 		nbrPionLigne = 1; // reinitialise le compteur
 		checkLigne(1, 1); // check direction bas/droite
 		checkLigne(-1, -1); // check direction haut/gauche
-		if (nbrPionLigne == 4) {
+		if (nbrPionLigne == 4)
 			return true;
-		}
+		
 		// check 2eme diagonal
 		nbrPionLigne = 1; // reinitialise le compteur
 		checkLigne(-1, 1); // check direction bas/gauche
 		checkLigne(1, -1); // check direction haut/droite
-		if (nbrPionLigne == 4) {
+		if (nbrPionLigne == 4)
 			return true;
-		} 
+		
 		return false;
 	}
 	
@@ -271,49 +323,9 @@ public class Puissance4V2 {
 		}
 	}
 	
-	/**
-	 * Retourne true si au moins 4 pions à la suite pour
-	 * le joueur actuel (tour)
-	 * @return true si gagné
-	 */
-	private boolean quattreALaSuiteV2() {
-		// check horizontal
-		nbrPionLigne = 1; // reinitialise le compteur 
-		checkLigneV2(0, 1); // check direction droite
-		checkLigneV2(0, -1); // check direction gauche
-		
-		// check vertical
-		nbrPionLigne = 1; // reinitialise le compteur 
-		checkLigneV2(1, 0); // check direction bas
-		checkLigne(-1, 0); // check direction haut
-		
-		// check 1ere diagonal
-		nbrPionLigne = 1; // reinitialise le compteur 
-		checkLigneV2(1, 1); // check direction bas/droite
-		checkLigneV2(-1, -1); // check direction haut/gauche
-		
-		// check 2eme diagonal
-		nbrPionLigne = 1; // reinitialise le compteur 
-		checkLigneV2(-1, 1); // check direction bas/gauche
-		checkLigneV2(1, -1); // check direction haut/droite
-		
-		return nbrPionLigne == 4;
+	private String couleurJoueur() {
+		return tour == TOUR_DES_JAUNES ? "JAUNE" : "ROUGE" ;
 	}
-	
-	private void checkLigneV2(int dirX, int dirY) {
-		if (nbrPionLigne < 4) {
-			int i = lignePion + dirX;
-			int j = colonnePion + dirY;
-			while (jeu[i][j] == pionJoueur() && nbrPionLigne < 4) {
-				i += dirX;
-				j += dirY;
-				nbrPionLigne++;
-			}
-		}
-	}
-
-	
-	
 	/**
 	 * Retourne le code du pion du joueur dont c'est le tour
 	 * @return
@@ -353,14 +365,13 @@ public class Puissance4V2 {
 
 		return colonne;
 	}
-
+	
 	public static void main(String[] args) {
-		Puissance4V2 partie = new Puissance4V2("Waf", "Vo");
+		Puissance4V2 partie = new Puissance4V2();
 		partie.start();
-		// partie.afficheListeDesCoups();
-
-		// partie.start();
-
+		partie.afficheListeDesCoups();
+		partie.start();
+		partie.afficheListeDesCoups();
 	}
 
 }
