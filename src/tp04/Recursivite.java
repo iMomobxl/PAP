@@ -3,6 +3,56 @@ package tp04;
 public class Recursivite {
 	
 	/**
+	 * le pivot sera égal à v[f]
+	 * trouve la position du pivot (supposant l'indice x)
+	 * Il faut ensuite que
+	 * ==> v[i] < pivot pour d<=i<x
+	 * ==> v[j]>= pivot pour x<j<= f
+	 * hyp: d<=f  d>=0  f< taille de V 
+	 * @param v
+	 * @param d 
+	 * @param f
+	 */
+	public static int posPivot(int[] v, int d, int f) {
+		assert d <= f && d >= 0 && f < v.length: "assert erreur";
+		
+		// enregistre les parametres
+		int i = d;
+		int j = f - 1;
+		int x = v[f];
+		
+		while (i <= j) {
+            if (v[i] < x) {
+                i++;
+            }
+            else if (v[j] >= x) {
+                j--;
+            }
+            else {
+            	int temp = v[i];
+                v[i] = v[j];
+                v[j] = temp;
+            }
+		}
+		
+		// met le pivot a la position final
+		int temp = v[i];
+        v[i] = v[f];
+        v[f] = temp;
+        
+		return i;
+	}
+	
+	public static void triRecursive(int[] v, int d, int f) {
+	    if (d < f) {
+	    	int index = posPivot(v, d, f); // Trouver la position du pivot
+	        triRecursive(v, d, index - 1); // Trier la partie gauche
+	        triRecursive(v, index + 1, f); // Trier la partie droite
+	    }
+	}
+	
+	
+	/**
 	 * Factorielle de n (recursivite)
 	 * @param n <= 25
 	 * @return
@@ -55,23 +105,7 @@ public class Recursivite {
 		}
 	}
 
-	public static void placePivot(int[] v, int d, int f) {
-		int pivot = v[f];
-		int i = d;
-		int j = f;
-		while (v[i] < v[i + 1]) {
-			i++;
-		}
-		while (v[j] < v[j +1]) {
-			j++;
-		}
-		int val = v[i];
-		v[i] = v[j];
-		v[j] = v[i];
-		placePivot(v, d, j+1);
 		
-	}
-	
 	public static void main(String[] args) {
 		
 		System.out.println(factoriel(25)); // max 25!!!
@@ -79,6 +113,25 @@ public class Recursivite {
 		System.out.println(power(2,62));
 		System.out.println(Math.pow(2,62));
 		deplacer(4, 1, 2);
-			
+		
+		int[] v = { 1, 7, 5, 2, 9, 4 };
+		for (int i = 0; i < v.length; i++) {
+			System.out.print(v[i] + ", ");
+		}
+		System.out.println();
+		triRecursive(v, 0, v.length - 1);
+		for (int i = 0; i < v.length; i++) {
+			System.out.print(v[i] + ", ");
+		}
+		System.out.println();
+		int[] v2 = { 1, 7, 5, 2, 9, 4, 20, 13, 3, 0, 6, 24};
+		for (int i = 0; i < v2.length; i++) {
+			System.out.print(v2[i] + ", ");
+		}
+		System.out.println();
+		triRecursive(v2, 0, v2.length - 1);
+		for (int i = 0; i < v2.length; i++) {
+			System.out.print(v2[i] + ", ");
+		}
 	}
 }
