@@ -1,5 +1,7 @@
 package tp04;
 
+import util.StackInt;
+
 public class Recursivite {
 	
 	/**
@@ -13,8 +15,8 @@ public class Recursivite {
 	 * @param d 
 	 * @param f
 	 */
-	public static int posPivot(int[] v, int d, int f) {
-		assert d <= f && d >= 0 && f < v.length: "assert erreur";
+	public static void posPivot(int[] v, int d, int f) {
+		assert d <= f : "assert erreur";
 		
 		// enregistre les parametres
 		int i = d;
@@ -22,35 +24,144 @@ public class Recursivite {
 		int x = v[f];
 		
 		while (i <= j) {
-            if (v[i] < x) {
-                i++;
+            while (v[i] < x) {
+            	i++;
             }
-            else if (v[j] >= x) {
-                j--;
+            while (j >= 0 && v[j] >= x) {
+            	j--;
             }
-            else {
-            	int temp = v[i];
-                v[i] = v[j];
-                v[j] = temp;
+            if (i < j) {
+            	// swap
+            	int tmp = v[i];
+            	v[i] = v[j];
+            	v[j] = tmp;
+            	
             }
 		}
 		
 		// met le pivot a la position final
-		int temp = v[i];
-        v[i] = v[f];
-        v[f] = temp;
+        v[f] = v[i];
+        v[i] = x;
+	}
+	
+	/**
+	 * quickSort recursif
+	 * @param v
+	 * @param d
+	 * @param f
+	 */
+	public static void quickSort(int[] v, int d, int f) {
+		assert d <= f : "assert erreur";
+		
+		// enregistre les parametres
+		int i = d;
+		int j = f - 1;
+		int x = v[f];
+		
+		while (i <= j) {
+            while (v[i] < x) {
+            	i++;
+            }
+            
+            while (j >= 0 && v[j] >= x) {
+//            while (v[j] >= x && j >= 0) {
+            	j--;
+            }
+            
+            if (i < j) {
+            	// swap
+            	int tmp = v[i];
+            	v[i] = v[j];
+            	v[j] = tmp;
+            	
+            }
+		}
+		
+		// met le pivot a la position final
+        v[f] = v[i];
+        v[i] = x;
         
-		return i;
+        // partie recursif de posPivot
+        // appeler le quickSort en fonction de la taille Gauche/Droite du pivot
+        int tailleGauche = i - d;
+        int tailleDroite = f - i;
+        if (tailleGauche < tailleDroite) {
+	        // minimum 2 element a gauche -> on rappel quickSort
+	        if (tailleGauche > 1 ) {
+	        	quickSort(v, d, i - 1);
+	        }
+	        // minimum 2 element a droite -> on rappel quickSort
+	        if (tailleDroite > 1) {
+	        	quickSort(v, i + 1, f);
+	        }
+        } else { // tailleGauche >= tailleDroite
+        	// minimum 2 element a droite -> on rappel quickSort
+	        if (tailleDroite > 1) {
+	        	quickSort(v, i + 1, f);
+	        }
+        	// minimum 2 element a gauche -> on rappel quickSort
+	        if (tailleGauche > 1 ) {
+	        	quickSort(v, d, i - 1);
+	        }
+        }
 	}
 	
-	public static void triRecursive(int[] v, int d, int f) {
-	    if (d < f) {
-	    	int index = posPivot(v, d, f); // Trouver la position du pivot
-	        triRecursive(v, d, index - 1); // Trier la partie gauche
-	        triRecursive(v, index + 1, f); // Trier la partie droite
-	    }
+	// version non recursive
+	public static int posPivot2(int[] v, int d, int f) {
+		assert d <= f : "assert erreur";
+		
+		// enregistre les parametres
+		int i = d;
+		int j = f - 1;
+		int x = v[f];
+		
+		while (i <= j) {
+            while (v[i] < x) {
+            	i++;
+            }
+            while (j >= 0 && v[j] >= x) {
+            	j--;
+            }
+            if (i < j) {
+            	// swap
+            	int tmp = v[i];
+            	v[i] = v[j];
+            	v[j] = tmp;
+            	
+            }
+		}
+		
+		// met le pivot a la position final
+        v[f] = v[i];
+        v[i] = x;
+        return i;
 	}
 	
+	/**
+	 * quickSort non recursif
+	 * @param v
+	 * @param d
+	 * @param f
+	 */
+	public static void quickSort2(int[] v, int d, int f) {
+		int i, j, p;
+		StackInt s = new StackInt(v.length + 1);
+		s.push(d);
+		s.push(f);
+		while (!s.empty() ) {
+			j = s.pop();
+			i = s.pop();
+			p = posPivot2(v, i, j);
+			if (p - i > 1) {
+				s.push(i);
+				s.push(p - 1);
+			}
+			if (j - p > 1) {
+				s.push(p + 1);
+				s.push(j);
+			}
+		}
+	}
 	
 	/**
 	 * Factorielle de n (recursivite)
@@ -114,24 +225,38 @@ public class Recursivite {
 		System.out.println(Math.pow(2,62));
 		deplacer(4, 1, 2);
 		
-		int[] v = { 1, 7, 5, 2, 9, 4 };
+		int[] v = { 1, 7, 5, 2, 0, 9, 4 };
 		for (int i = 0; i < v.length; i++) {
 			System.out.print(v[i] + ", ");
 		}
 		System.out.println();
-		triRecursive(v, 0, v.length - 1);
+		quickSort(v, 0, v.length - 1);
 		for (int i = 0; i < v.length; i++) {
 			System.out.print(v[i] + ", ");
 		}
+		
 		System.out.println();
-		int[] v2 = { 1, 7, 5, 2, 9, 4, 20, 13, 3, 0, 6, 24};
+		
+		int[] v2 = { 1, 7, 5, 2, 9, 4, 20, 13, 3, 6, 24 };
 		for (int i = 0; i < v2.length; i++) {
 			System.out.print(v2[i] + ", ");
 		}
 		System.out.println();
-		triRecursive(v2, 0, v2.length - 1);
+		quickSort(v2, 0, v2.length - 1);
 		for (int i = 0; i < v2.length; i++) {
 			System.out.print(v2[i] + ", ");
+		}
+		
+		System.out.println();
+		
+		int[] v3 = { 1, 7, 5, 2, 9, 4, 20, 13, 3, 6, 24 };
+		for (int i = 0; i < v3.length; i++) {
+			System.out.print(v2[i] + ", ");
+		}
+		System.out.println();
+		quickSort2(v3, 0, v3.length - 1);
+		for (int i = 0; i < v3.length; i++) {
+			System.out.print(v3[i] + ", ");
 		}
 	}
 }
